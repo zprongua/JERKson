@@ -40,6 +40,7 @@ public class ItemParser {
                 count += 2;
             }
             String name = singleItem.substring(ia[0], ia[1]);
+            if (name.equals("co0kies")) name = "cookies";
             Double price = Double.parseDouble(singleItem.substring(ia[2], ia[3]));
             String type = singleItem.substring(ia[4], ia[5]);
             String expiration = singleItem.substring(ia[6], ia[7] + 1);

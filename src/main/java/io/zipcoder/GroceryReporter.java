@@ -3,10 +3,7 @@ package io.zipcoder;
 import io.zipcoder.utils.FileReader;
 import io.zipcoder.utils.Item;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,16 +18,28 @@ public class GroceryReporter {
     public String toString() {
         ItemParser ip = new ItemParser();
         List<Item> li = ip.parseItemList(originalFileText);
-        System.out.println(li.get(0));
-        Map<String, List<Double>> hm = li.stream().collect(Collectors.groupingBy(Item::getName,
+        Map<String, List<Double>> hm = li.stream().parallel().collect(Collectors.groupingBy(Item::getName,
                 Collectors.mapping(Item::getPrice, Collectors.toList())));
-        int count = 0;
+        System.out.println(hm.keySet());
+        Set<Double> prices = new TreeSet<>();
         StringBuilder sb = new StringBuilder();
         for (String k : hm.keySet()) {
-            sb.append(String.format("name:%8s \t\t seen: %s times\n============= \t\t =============\n", k, hm.get(k).size()));
-            sb.append(String.format("Price:%7s\t\t seen: %s times\n", hm.get(k).get(0), hm.get(k).size()));
+            String j = k.substring(0,1).toUpperCase() + k.substring(1);
+            sb.append(String.format("name:%8s        seen: %s times\n=============        =============\n", j, hm.get(k).size()));
+            for (Double d : hm.get(k)) {
+                if (!prices.contains(d)) {
+                    prices.add(d);
+                    int count = Collections.frequency(hm.get(k), d);
+                    String time = "times";
+                    if (count==1) time = "time";
+                    sb.append(String.format("Price:   %s\t\t seen: %s %s\n", d, count, time));
+                    sb.append("-------------        -------------\n");
+                }
+            }
             sb.append("\n");
+            prices.clear();
         }
+        sb.append(String.format("Errors               seen: %s times\n", ip.getCountOfErrors()));
         return sb.toString();
     }
 }
