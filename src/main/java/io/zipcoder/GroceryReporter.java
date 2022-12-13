@@ -23,6 +23,7 @@ public class GroceryReporter {
         System.out.println(hm.keySet());
         Set<Double> prices = new TreeSet<>();
         StringBuilder sb = new StringBuilder();
+        int dashes = 0;
         for (String k : hm.keySet()) {
             String j = k.substring(0,1).toUpperCase() + k.substring(1);
             sb.append(String.format("name:%8s        seen: %s times\n=============        =============\n", j, hm.get(k).size()));
@@ -33,9 +34,15 @@ public class GroceryReporter {
                     String time = "times";
                     if (count==1) time = "time";
                     sb.append(String.format("Price:   %s\t\t seen: %s %s\n", d, count, time));
-                    sb.append("-------------        -------------\n");
+                    if(dashes==0) {
+                        dashes++;
+                        sb.append("-------------        -------------\n");
+
+                    }
                 }
+
             }
+            dashes = 0;
             sb.append("\n");
             prices.clear();
         }
