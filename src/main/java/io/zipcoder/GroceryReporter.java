@@ -5,7 +5,6 @@ import io.zipcoder.utils.Item;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class GroceryReporter {
     private final String originalFileText;
@@ -18,7 +17,7 @@ public class GroceryReporter {
     public String toString() {
         ItemParser ip = new ItemParser();
         List<Item> li = ip.parseItemList(originalFileText);
-        Map<String, List<Double>> hm = li.stream().parallel().collect(Collectors.groupingBy(Item::getName,
+        Map<String, List<Double>> hm = li.stream().collect(Collectors.groupingBy(Item::getName,
                 Collectors.mapping(Item::getPrice, Collectors.toList())));
         System.out.println(hm.keySet());
         Set<Double> prices = new TreeSet<>();
@@ -30,17 +29,12 @@ public class GroceryReporter {
             for (Double d : hm.get(k)) {
                 if (!prices.contains(d)) {
                     prices.add(d);
-                    int count = Collections.frequency(hm.get(k), d);
-                    String time = "times";
-                    if (count==1) time = "time";
-                    sb.append(String.format("Price:   %s\t\t seen: %s %s\n", d, count, time));
+                    sb.append(String.format("Price:   %s\t\t seen: %s %s\n", d, Collections.frequency(hm.get(k), d), Collections.frequency(hm.get(k), d) == 1 ? "time" : "times"));
                     if(dashes==0) {
                         dashes++;
                         sb.append("-------------        -------------\n");
-
                     }
                 }
-
             }
             dashes = 0;
             sb.append("\n");
