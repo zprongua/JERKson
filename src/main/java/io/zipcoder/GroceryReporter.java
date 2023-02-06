@@ -19,7 +19,6 @@ public class GroceryReporter {
         List<Item> li = ip.parseItemList(originalFileText);
         Map<String, List<Double>> hm = li.stream().collect(Collectors.groupingBy(Item::getName,
                 Collectors.mapping(Item::getPrice, Collectors.toList())));
-        System.out.println(hm.keySet());
         Set<Double> prices = new TreeSet<>();
         StringBuilder sb = new StringBuilder();
         int dashes = 0;
